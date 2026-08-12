@@ -9,9 +9,9 @@
 name: Jotaid
 identifier: com.leeron.jotaid.popclip
 description: Save the selection to your Jotaid Inbox, with its source and time.
-# Text icon rather than an image: PopClip draws it monochrome in the bar, which
-# keeps it consistent with every other extension and needs no bundled asset.
-icon: circle filled J
+# The Jotaid mark, monochrome — see jotaid.svg for what differs from the app's
+# own gradient logo and why.
+icon: jotaid.svg
 popclip version: 4151
 macos version: "14.0"
 
