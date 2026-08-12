@@ -1,0 +1,68 @@
+#!/bin/zsh
+#
+# Jotaid PopClip action — hands the selection to the running app through the
+# `jotaid://clip-note` deep link. The app sanitises everything it receives
+# (see ExternalClipPayload.swift); this script only has to encode faithfully.
+#
+# Deliberately depends on nothing but /bin/zsh and three binaries that ship with
+# macOS. Perl, Python and Ruby are all "deprecated scripting runtimes" Apple has
+# said it will stop shipping, and an extension that breaks on an OS upgrade is
+# worse than one that is slightly verbose.
+
+emulate -L zsh
+set -euo pipefail
+
+# Hard ceiling for one clipping, in characters. This is NOT the real limit —
+# the app enforces its own (AppConfig.Security.maxClipTextLength) and appends an
+# ellipsis so the truncation is visible. This one only stops a pathological
+# selection (a whole file) from building a URL that overruns the argument list.
+readonly MAX_CHARS=40000
+
+# Percent-encodes every byte as %XX.
+#
+# Encoding *everything* rather than only the reserved characters costs three
+# bytes per character but removes every edge case at once: multi-byte UTF-8,
+# newlines, `&`, `#`, `%` and whatever the source app puts on the pasteboard all
+# take the same path. `od` walks the raw bytes, so no locale setting can change
+# the result.
+percent_encode() {
+  printf '%s' "$1" | /usr/bin/od -An -tx1 -v | /usr/bin/tr -d ' \n' | /usr/bin/sed 's/../%&/g'
+}
+
+body="${POPCLIP_TEXT:-}"
+# Markdown keeps links and emphasis that plain text would flatten — worth having
+# in a Markdown note app. Falls back to plain text whenever the source app does
+# not offer rich text (POPCLIP_MARKDOWN is then empty).
+if [[ "${POPCLIP_OPTION_KEEPFORMATTING:-1}" == "1" && -n "${POPCLIP_MARKDOWN:-}" ]]; then
+  body="${POPCLIP_MARKDOWN}"
+fi
+
+if [[ -z "${body//[[:space:]]/}" ]]; then
+  echo "Nothing to clip." >&2
+  exit 1
+fi
+
+if (( ${#body} > MAX_CHARS )); then
+  body="${body[1,MAX_CHARS]}"
+fi
+
+query="text=$(percent_encode "$body")"
+
+if [[ "${POPCLIP_OPTION_INCLUDESOURCE:-1}" == "1" ]]; then
+  # Browser title/URL are only set when the selection came from a browser page;
+  # the app name is always there. Each is optional on the app side too.
+  if [[ -n "${POPCLIP_BROWSER_TITLE:-}" ]]; then
+    query+="&title=$(percent_encode "${POPCLIP_BROWSER_TITLE}")"
+  fi
+  if [[ -n "${POPCLIP_BROWSER_URL:-}" ]]; then
+    query+="&url=$(percent_encode "${POPCLIP_BROWSER_URL}")"
+  fi
+  if [[ -n "${POPCLIP_APP_NAME:-}" ]]; then
+    query+="&app=$(percent_encode "${POPCLIP_APP_NAME}")"
+  fi
+fi
+
+# `-g` keeps Jotaid in the background: you clipped something while working
+# somewhere else, so stealing focus would defeat the point. If Jotaid is not
+# running it launches, still without coming to the front.
+/usr/bin/open -g "jotaid://clip-note?${query}"

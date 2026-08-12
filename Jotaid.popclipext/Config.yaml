@@ -1,0 +1,44 @@
+# PopClip extension for Jotaid.
+#
+# Selecting text anywhere on macOS and clicking "Jotaid" in the PopClip bar
+# sends the selection to the Jotaid Inbox, together with where it came from.
+#
+# Install: double-click the enclosing `Jotaid.popclipext` folder.
+# See README.md for details.
+
+name: Jotaid
+identifier: com.leeron.jotaid.popclip
+description: Save the selection to your Jotaid Inbox, with its source and time.
+# Text icon rather than an image: PopClip draws it monochrome in the bar, which
+# keeps it consistent with every other extension and needs no bundled asset.
+icon: circle filled J
+popclip version: 4151
+macos version: "14.0"
+
+options:
+  - identifier: keepformatting
+    type: boolean
+    label: Keep formatting
+    default value: true
+    description: >-
+      Send the selection as Markdown when the source app offers rich text, so
+      links and emphasis survive the trip. Turn off to always send plain text.
+
+  - identifier: includesource
+    type: boolean
+    label: Include source
+    default value: true
+    description: >-
+      Add the page title, page link and app name to the footnote of the saved
+      note. Turn off to save the selection alone.
+
+actions:
+  - title: Jotaid
+    shell script file: clip.zsh
+    interpreter: /bin/zsh
+    # Needed for POPCLIP_MARKDOWN; harmless when "Keep formatting" is off.
+    capture html: true
+    requirements: [text]
+    # Shows a tick (or a cross) right in the PopClip bar — the app itself saves
+    # silently in the background, so this is the only immediate feedback.
+    after: show-status
