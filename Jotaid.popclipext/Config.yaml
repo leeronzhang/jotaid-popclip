@@ -32,6 +32,17 @@ options:
       Add the page title, page link and app name to the footnote of the saved
       note. Turn off to save the selection alone.
 
+  - identifier: editbeforesaving
+    type: boolean
+    label: Edit before saving
+    default value: false
+    description: >-
+      Open a small window in Jotaid so you can edit the clipping before it is
+      saved. Off (the default) saves it straight to the Inbox without
+      interrupting you. The window has a "Don't ask again" box; ticking it
+      switches back to silent saving, and turning this option off and on again
+      brings the window back.
+
 actions:
   - title: Jotaid
     shell script file: clip.zsh

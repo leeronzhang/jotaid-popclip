@@ -32,11 +32,27 @@ Both live in PopClip → Extensions → Jotaid.
 | --- | --- | --- |
 | Keep formatting | on | Sends Markdown when the source app offers rich text, so links and emphasis survive. Off = always plain text. |
 | Include source | on | Adds the page title, link and app name to the footnote. Off = the selection alone. |
+| Edit before saving | off | Opens a small window in Jotaid so you can fix up the clipping first. Off = saved straight to the Inbox. |
+
+## Edit before saving
+
+With the option on, clicking **Jotaid** opens a window holding the selection. Edit it, then
+**Save** (or ⌘⏎) files it in the Inbox; **Cancel** (or Esc) throws it away. Either way the
+foreground goes back to the app you were reading.
+
+The window only carries the selection. The source line and the timestamp are added underneath
+when it is saved — they are not in the editing area, where they would be deleted by accident.
+
+Ticking **Don't ask again** in that window switches back to silent saving without going through
+the settings. To bring the window back, turn **Edit before saving** off and on again in PopClip:
+Jotaid cannot read PopClip's settings, so a changed value is how it learns you have made up your
+mind again. That is the whole of it — there is no third switch hidden in Jotaid's own settings.
 
 ## How it behaves
 
-- **Nothing comes to the front.** The clipping is saved in the background; you stay in whatever
-  app you were reading. The tick in the PopClip bar is your confirmation.
+- **Nothing comes to the front** — unless you asked it to (see above). The clipping is saved in
+  the background; you stay in whatever app you were reading. The tick in the PopClip bar is your
+  confirmation.
 - **Only `https:` source links are kept.** The footnote renders the source as a clickable link,
   and a link that cannot be opened safely is worse than no link at all. A page on plain `http:`
   still contributes its title and app name.
@@ -49,12 +65,17 @@ The extension is a thin wrapper over a deep link that anything can call — Shor
 Alfred, a cron job:
 
 ```
-jotaid://clip-note?text=<required>&title=<optional>&url=<optional>&app=<optional>
+jotaid://clip-note?text=<required>&title=&url=&app=&bundle=&mode=silent|ask
 ```
 
 All values are percent-encoded. The app treats every field as untrusted: it strips control
 characters, collapses metadata to a single line, caps lengths and drops any source URL that
 is not a safely openable `https:` address. A missing or empty `text` means the link is ignored.
+
+`mode` picks between saving silently and opening the editor; anything missing or unrecognised
+means `silent`. `bundle` is the source app's bundle identifier, used only to hand the foreground
+back after the editor closes — it never reaches the note, and a value outside `[A-Za-z0-9.-]`
+is dropped rather than trimmed (a truncated identifier names a *different* app).
 
 ## Troubleshooting
 

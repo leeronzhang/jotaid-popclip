@@ -62,7 +62,35 @@ if [[ "${POPCLIP_OPTION_INCLUDESOURCE:-1}" == "1" ]]; then
   fi
 fi
 
+# Which of the two modes this click asked for. Sent on *every* clipping, not
+# only when it changes: the app cannot read PopClip's settings, so a value that
+# differs from the last one it saw is its only way of noticing that this option
+# was touched — and that is what clears a "Don't ask again" ticked earlier.
+#
+# An older Jotaid ignores the parameter and saves silently, which is exactly
+# what it did before this option existed.
+if [[ "${POPCLIP_OPTION_EDITBEFORESAVING:-0}" == "1" ]]; then
+  query+="&mode=ask"
+  # Only the editor needs this: Jotaid hands the foreground back to the app you
+  # were reading once the window closes. The bundle identifier is exact where
+  # the app *name* is ambiguous (two "Preview"s, localised names).
+  if [[ -n "${POPCLIP_APP_IDENTIFIER:-}" ]]; then
+    query+="&bundle=$(percent_encode "${POPCLIP_APP_IDENTIFIER}")"
+  fi
+else
+  query+="&mode=silent"
+fi
+
 # `-g` keeps Jotaid in the background: you clipped something while working
 # somewhere else, so stealing focus would defeat the point. If Jotaid is not
 # running it launches, still without coming to the front.
-/usr/bin/open -g "jotaid://clip-note?${query}"
+#
+# The editor mode is the one case where the interruption *is* the point, so it
+# skips `-g`: a background app raising its own window is a request the system
+# may delay or turn into a bouncing Dock icon, and you would be typing into
+# whatever still had focus.
+if [[ "${POPCLIP_OPTION_EDITBEFORESAVING:-0}" == "1" ]]; then
+  /usr/bin/open "jotaid://clip-note?${query}"
+else
+  /usr/bin/open -g "jotaid://clip-note?${query}"
+fi
