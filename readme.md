@@ -15,9 +15,9 @@ The part you selected, kept verbatim.
 
 Every clipping is tagged `clipping`, so the whole collection is one filter away in the note list.
 
-Requires [Jotaid](https://jotaid.com) — a Markdown notes app for macOS with backlinks, a
-knowledge graph and a co-occurrence matrix. The app does **not** need to be running: the
-clipping launches it in the background if necessary.
+Requires [Jotaid](https://jotaid.com) 1.1.3 or later — a Markdown notes app for macOS with
+backlinks, a knowledge graph and a co-occurrence matrix. The app does **not** need to be
+running: the clipping launches it in the background if necessary.
 
 ## Options
 
@@ -27,9 +27,12 @@ In PopClip → Extensions → Jotaid.
 | --- | --- | --- |
 | Keep formatting | on | Sends Markdown when the source app offers rich text, so links and emphasis survive. Off = always plain text. |
 | Include source | on | Adds the page title, link and app name to the footnote. Off = the selection alone. |
-| Edit before saving | off | Opens a small window in Jotaid so you can fix up the clipping first. Off = saved straight to the Inbox. |
+| Edit before saving | off | Opens a small window in Jotaid so you can fix up the clipping first. Off = saved straight to the Inbox. Needs Jotaid 1.1.4. |
 
 ## Edit before saving
+
+*Needs Jotaid 1.1.4 or later. On 1.1.3 the option is simply ignored and the clipping is saved
+silently, as it always was — nothing breaks, the window just does not appear.*
 
 With the option on, clicking **Jotaid** opens a window holding the selection. Edit it, then
 **Save** (or ⌘⏎) files it in the Inbox; **Cancel** (or Esc) throws it away. Either way the
@@ -109,7 +112,5 @@ installed. Install the app, then select some text again.
 
 ## Changelog
 
-**1.1** — New *Edit before saving* option: review or fix a clipping in a small window before it
-is filed, with a "Don't ask again" box to go back to silent saving. Requires Jotaid 1.1.4.
-
-**1.0** — First release: silent clipping to the Inbox, with source and capture time.
+**1.0** — First release: clipping to the Inbox with source and capture time, silently or
+through the editing window.
