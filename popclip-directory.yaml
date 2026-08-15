@@ -1,0 +1,15 @@
+# Tells the PopClip Extensions Directory build bot which folders in this
+# repository are extension packages.
+#
+# This directory doubles as the working copy of the public submission repo:
+# everything beside this file (Jotaid.popclipext/, readme.md, LICENSE) is what
+# lives at the root of that repo. Edit it here — this is the source of truth —
+# and copy it over when cutting a release.
+#
+# https://www.popclip.app/extensions/submit
+
+include: "Jotaid.popclipext"
+
+# Release tags are cut as `v1.0`, `v1.1`, … — the bot strips this prefix to
+# read the version number.
+versionPrefix: v

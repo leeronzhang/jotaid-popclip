@@ -1,8 +1,8 @@
-# Jotaid × PopClip
+# Jotaid
 
-Select text anywhere on macOS, click **Jotaid** in the [PopClip](https://www.popclip.app) bar,
-and the selection lands in your Jotaid **Inbox** — with the page title, link, source app and
-capture time recorded underneath it.
+Select text anywhere on macOS, click **Jotaid** in the PopClip bar, and the selection lands in
+your Jotaid **Inbox** — with the page title, link, source app and capture time recorded
+underneath it.
 
 ```markdown
 The part you selected, kept verbatim.
@@ -15,18 +15,13 @@ The part you selected, kept verbatim.
 
 Every clipping is tagged `clipping`, so the whole collection is one filter away in the note list.
 
-## Install
+Requires [Jotaid](https://jotaid.com) — a Markdown notes app for macOS with backlinks, a
+knowledge graph and a co-occurrence matrix. The app does **not** need to be running: the
+clipping launches it in the background if necessary.
 
-1. Double-click `Jotaid.popclipext`. PopClip installs it.
-2. macOS will warn that the extension contains executable code — it does: a shell script that
-   builds a `jotaid://` link and opens it. The script is `clip.zsh`, right next to this file,
-   and it is short enough to read in a minute.
+## Options
 
-Jotaid does **not** need to be running: the link launches it in the background if necessary.
-
-## Settings
-
-Both live in PopClip → Extensions → Jotaid.
+In PopClip → Extensions → Jotaid.
 
 | Option | Default | What it does |
 | --- | --- | --- |
@@ -44,20 +39,34 @@ The window only carries the selection. The source line and the timestamp are add
 when it is saved — they are not in the editing area, where they would be deleted by accident.
 
 Ticking **Don't ask again** in that window switches back to silent saving without going through
-the settings. To bring the window back, turn **Edit before saving** off and on again in PopClip:
-Jotaid cannot read PopClip's settings, so a changed value is how it learns you have made up your
-mind again. That is the whole of it — there is no third switch hidden in Jotaid's own settings.
+the settings. To bring the window back, turn **Edit before saving** off and on again here in
+PopClip: Jotaid cannot read PopClip's settings, so a changed value is how it learns you have
+made up your mind again. That is the whole of it — there is no third switch hidden in Jotaid's
+own settings.
 
 ## How it behaves
 
-- **Nothing comes to the front** — unless you asked it to (see above). The clipping is saved in
-  the background; you stay in whatever app you were reading. The tick in the PopClip bar is your
+- **Nothing comes to the front** — unless you asked it to, above. The clipping is saved in the
+  background; you stay in whatever app you were reading. The tick in the PopClip bar is your
   confirmation.
 - **Only `https:` source links are kept.** The footnote renders the source as a clickable link,
   and a link that cannot be opened safely is worse than no link at all. A page on plain `http:`
   still contributes its title and app name.
-- **Long selections are truncated**, with an ellipsis marking where. The limit is
-  `AppConfig.Security.maxClipTextLength` (20 000 characters) on the app side.
+- **Long selections are truncated**, with an ellipsis marking where, at 20 000 characters.
+
+## Privacy
+
+The selected text goes to one place: the copy of Jotaid installed on this Mac, over its
+`jotaid://` URL scheme. **Nothing is sent over the network, and no third party is involved** —
+neither by this extension nor by Jotaid when it stores the clipping.
+
+The script it runs (`clip.zsh`, about seventy lines) percent-encodes the selection, appends the
+page title, page URL and app name that PopClip provides, and hands the result to `open`. It
+shells out to nothing but `od`, `tr`, `sed` and `open`, all of which ship with macOS.
+
+The source app's bundle identifier is sent along **only** when *Edit before saving* is on, and
+is used for exactly one thing: giving that app the foreground back once the window closes. It
+never reaches the note.
 
 ## The link behind it
 
@@ -69,13 +78,13 @@ jotaid://clip-note?text=<required>&title=&url=&app=&bundle=&mode=silent|ask
 ```
 
 All values are percent-encoded. The app treats every field as untrusted: it strips control
-characters, collapses metadata to a single line, caps lengths and drops any source URL that
-is not a safely openable `https:` address. A missing or empty `text` means the link is ignored.
+characters, collapses metadata to a single line, caps lengths and drops any source URL that is
+not a safely openable `https:` address. A missing or empty `text` means the link is ignored.
 
 `mode` picks between saving silently and opening the editor; anything missing or unrecognised
-means `silent`. `bundle` is the source app's bundle identifier, used only to hand the foreground
-back after the editor closes — it never reaches the note, and a value outside `[A-Za-z0-9.-]`
-is dropped rather than trimmed (a truncated identifier names a *different* app).
+means `silent`. `bundle` is the source app's bundle identifier, described above — a value
+outside `[A-Za-z0-9.-]` is dropped rather than trimmed, since a truncated identifier names a
+*different* app.
 
 ## Troubleshooting
 
@@ -94,3 +103,13 @@ then retry.
 ```sh
 POPCLIP_TEXT="hello" POPCLIP_APP_NAME="Terminal" zsh Jotaid.popclipext/clip.zsh
 ```
+
+**The Jotaid action never appears in the bar.** The extension hides itself when Jotaid is not
+installed. Install the app, then select some text again.
+
+## Changelog
+
+**1.1** — New *Edit before saving* option: review or fix a clipping in a small window before it
+is filed, with a "Don't ask again" box to go back to silent saving. Requires Jotaid 1.1.4.
+
+**1.0** — First release: silent clipping to the Inbox, with source and capture time.

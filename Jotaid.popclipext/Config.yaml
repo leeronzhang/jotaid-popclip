@@ -7,13 +7,29 @@
 # See README.md for details.
 
 name: Jotaid
-identifier: com.leeron.jotaid.popclip
+# Fixed for good once published to the directory — renaming it there means
+# retiring this extension and shipping a different one.
+identifier: com.jotaid.popclip
 description: Save the selection to your Jotaid Inbox, with its source and time.
 # The Jotaid mark, monochrome — see jotaid.svg for what differs from the app's
 # own gradient logo and why.
 icon: jotaid.svg
+# The features used here (capture html, after: show-status, boolean options,
+# POPCLIP_APP_IDENTIFIER) are all long-standing, so the bar is kept low even
+# though development happens against a current build.
 popclip version: 4151
 macos version: "14.0"
+
+# The extension does nothing without the app: every clipping is handed to
+# Jotaid over its `jotaid://` URL scheme. Declaring this keeps the action out
+# of the PopClip bar on machines that do not have it, instead of failing
+# silently after the click.
+app:
+  name: Jotaid
+  link: https://jotaid.com
+  check installed: true
+  bundle identifiers:
+    - np.Jotaid
 
 options:
   - identifier: keepformatting
