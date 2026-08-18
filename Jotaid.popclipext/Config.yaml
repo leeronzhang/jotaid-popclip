@@ -60,13 +60,27 @@ options:
       brings the window back. Needs Jotaid 1.1.4 — on 1.1.3 the clipping is
       saved silently and no window appears.
 
+# Two actions for one button. They differ only in whether PopClip reports a
+# result, and their requirements are mutually exclusive on the same option, so
+# exactly one of them is ever offered.
 actions:
+  # Silent saving. The tick in the PopClip bar is the only immediate feedback
+  # there is — the app saves in the background, where you cannot see its toast.
   - title: Jotaid
     shell script file: clip.zsh
     interpreter: /bin/zsh
     # Needed for POPCLIP_MARKDOWN; harmless when "Keep formatting" is off.
     capture html: true
-    requirements: [text]
-    # Shows a tick (or a cross) right in the PopClip bar — the app itself saves
-    # silently in the background, so this is the only immediate feedback.
+    requirements: [text, "option-editbeforesaving=0"]
     after: show-status
+
+  # Edit before saving. Deliberately reports nothing: the script only hands the
+  # selection to Jotaid and returns at once, so a tick here would appear while
+  # the editor is still open and claim something that has not happened yet.
+  # Whether the clipping was saved is decided in that window, and the window
+  # says so itself. (`after` has no "do nothing" value — omitting it is that.)
+  - title: Jotaid
+    shell script file: clip.zsh
+    interpreter: /bin/zsh
+    capture html: true
+    requirements: [text, "option-editbeforesaving=1"]
