@@ -46,6 +46,12 @@ if (( ${#body} > MAX_CHARS )); then
   body="${body[1,MAX_CHARS]}"
 fi
 
+target="${1:-inbox}"
+if [[ "$target" != "inbox" && "$target" != "sticky" ]]; then
+  echo "Unknown clipping destination." >&2
+  exit 1
+fi
+
 query="text=$(percent_encode "$body")"
 
 if [[ "${POPCLIP_OPTION_INCLUDESOURCE:-1}" == "1" ]]; then
@@ -69,7 +75,9 @@ fi
 #
 # An older Jotaid ignores the parameter and saves silently, which is exactly
 # what it did before this option existed.
-if [[ "${POPCLIP_OPTION_EDITBEFORESAVING:-0}" == "1" ]]; then
+if [[ "$target" == "sticky" ]]; then
+  query+="&mode=sticky"
+elif [[ "${POPCLIP_OPTION_EDITBEFORESAVING:-0}" == "1" ]]; then
   query+="&mode=ask"
   # Only the editor needs this: Jotaid hands the foreground back to the app you
   # were reading once the window closes. The bundle identifier is exact where
@@ -89,7 +97,7 @@ fi
 # skips `-g`: a background app raising its own window is a request the system
 # may delay or turn into a bouncing Dock icon, and you would be typing into
 # whatever still had focus.
-if [[ "${POPCLIP_OPTION_EDITBEFORESAVING:-0}" == "1" ]]; then
+if [[ "$target" == "sticky" || "${POPCLIP_OPTION_EDITBEFORESAVING:-0}" == "1" ]]; then
   /usr/bin/open "jotaid://clip-note?${query}"
 else
   /usr/bin/open -g "jotaid://clip-note?${query}"

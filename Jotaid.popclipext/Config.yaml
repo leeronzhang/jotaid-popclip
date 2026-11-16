@@ -10,7 +10,7 @@ name: Jotaid
 # Fixed for good once published to the directory — renaming it there means
 # retiring this extension and shipping a different one.
 identifier: com.jotaid.popclip
-description: Save the selection to your Jotaid Inbox, with its source and time.
+description: Save the selection to your Jotaid Inbox or open a Sticky Jot, with its source and time.
 # The Jotaid mark, monochrome — see jotaid.svg for what differs from the app's
 # own gradient logo and why.
 icon: jotaid.svg
@@ -60,7 +60,7 @@ options:
       brings the window back. Needs Jotaid 1.1.4 — on 1.1.3 the clipping is
       saved silently and no window appears.
 
-# Two actions for one button. They differ only in whether PopClip reports a
+# Two Inbox actions for one button. They differ only in whether PopClip reports a
 # result, and their requirements are mutually exclusive on the same option, so
 # exactly one of them is ever offered.
 actions:
@@ -84,3 +84,11 @@ actions:
     interpreter: /bin/zsh
     capture html: true
     requirements: [text, "option-editbeforesaving=1"]
+
+  # Separate destination, independent of the Inbox editing preference.
+  - title: Sticky Jot
+    icon: "symbol:note.text"
+    shell script file: sticky.zsh
+    interpreter: /bin/zsh
+    capture html: true
+    requirements: [text]

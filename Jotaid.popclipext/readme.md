@@ -114,3 +114,11 @@ installed. Install the app, then select some text again.
 
 **1.0** — First release: clipping to the Inbox with source and capture time, silently or
 through the editing window.
+
+## Send to Sticky Jot
+
+Click **Sticky Jot** to save a new note in Inbox and open it as a desktop sticky
+note. Each click creates a separate note. Keep formatting and Include source
+apply to both actions; Edit before saving applies only to the Inbox action.
+This action requires a Jotaid version supporting `jotaid://clip-note?mode=sticky`;
+older versions save to Inbox silently instead of opening a sticky note.
