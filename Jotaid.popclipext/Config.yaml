@@ -1,7 +1,7 @@
 # PopClip extension for Jotaid.
 #
 # Selecting text anywhere on macOS and clicking "Jotaid" in the PopClip bar
-# sends the selection to the Jotaid Inbox, together with where it came from.
+# sends the selection to Inbox; Option-click opens it as a Sticky Jot.
 #
 # Install: double-click the enclosing `Jotaid.popclipext` folder.
 # See README.md for details.
@@ -65,8 +65,12 @@ options:
 # exactly one of them is ever offered.
 actions:
   # Silent saving. The tick in the PopClip bar is the only immediate feedback
-  # there is — the app saves in the background, where you cannot see its toast.
-  - title: Jotaid
+  # there is — it acknowledges handing the URL to Jotaid. Option-click uses
+  # the same button but opens the saved note as a Sticky Jot.
+  - title:
+      en: "Jotaid — Click: Inbox · ⌥ Option-click: Sticky Jot"
+      zh-hans: "Jotaid — 点击：Inbox · ⌥ Option 点击：Sticky Jot"
+      zh-hant: "Jotaid — 點擊：Inbox · ⌥ Option 點擊：Sticky Jot"
     shell script file: clip.zsh
     interpreter: /bin/zsh
     # Needed for POPCLIP_MARKDOWN; harmless when "Keep formatting" is off.
@@ -79,16 +83,11 @@ actions:
   # the editor is still open and claim something that has not happened yet.
   # Whether the clipping was saved is decided in that window, and the window
   # says so itself. (`after` has no "do nothing" value — omitting it is that.)
-  - title: Jotaid
+  - title:
+      en: "Jotaid — Click: Inbox · ⌥ Option-click: Sticky Jot"
+      zh-hans: "Jotaid — 点击：Inbox · ⌥ Option 点击：Sticky Jot"
+      zh-hant: "Jotaid — 點擊：Inbox · ⌥ Option 點擊：Sticky Jot"
     shell script file: clip.zsh
     interpreter: /bin/zsh
     capture html: true
     requirements: [text, "option-editbeforesaving=1"]
-
-  # Separate destination, independent of the Inbox editing preference.
-  - title: Sticky Jot
-    icon: "symbol:note.text"
-    shell script file: sticky.zsh
-    interpreter: /bin/zsh
-    capture html: true
-    requirements: [text]

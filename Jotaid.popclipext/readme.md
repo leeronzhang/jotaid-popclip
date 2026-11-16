@@ -117,8 +117,10 @@ through the editing window.
 
 ## Send to Sticky Jot
 
-Click **Sticky Jot** to save a new note in Inbox and open it as a desktop sticky
+Hold **⌥ Option** and click the **Jotaid** icon to save a new note in Inbox and open it as a desktop sticky
 note. Each click creates a separate note. Keep formatting and Include source
-apply to both actions; Edit before saving applies only to the Inbox action.
+apply to both destinations; Edit before saving applies only to a normal Inbox click.
+Hover over the single Jotaid icon to see both gestures in its tooltip (English,
+Simplified Chinese or Traditional Chinese, following your preferred language).
 This action requires a Jotaid version supporting `jotaid://clip-note?mode=sticky`;
 older versions save to Inbox silently instead of opening a sticky note.

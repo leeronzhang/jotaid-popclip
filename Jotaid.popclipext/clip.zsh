@@ -46,7 +46,20 @@ if (( ${#body} > MAX_CHARS )); then
   body="${body[1,MAX_CHARS]}"
 fi
 
+# Modifier flags are decimal strings from PopClip. Validate before arithmetic;
+# an explicit destination remains available for command-line callers.
+readonly OPTION_MODIFIER_FLAG=524288
 target="${1:-inbox}"
+if (( $# == 0 )); then
+  modifier_flags="${POPCLIP_MODIFIER_FLAGS:-0}"
+  if [[ "$modifier_flags" != <-> || ${#modifier_flags} -gt 7 ]]; then
+    echo "Invalid modifier flags." >&2
+    exit 1
+  fi
+  if (( (10#$modifier_flags & OPTION_MODIFIER_FLAG) != 0 )); then
+    target="sticky"
+  fi
+fi
 if [[ "$target" != "inbox" && "$target" != "sticky" ]]; then
   echo "Unknown clipping destination." >&2
   exit 1

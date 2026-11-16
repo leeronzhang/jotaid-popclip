@@ -2,7 +2,7 @@
 
 A [PopClip](https://www.popclip.app) extension that saves the selected text to your
 [Jotaid](https://jotaid.com) Inbox, with the page title, link, source app and capture time
-recorded underneath it. Choose **Sticky Jot** to open the new note on your desktop.
+recorded underneath it. **⌥ Option-click** the Jotaid icon to open the new note on your desktop.
 
 **→ [Full documentation](Jotaid.popclipext/readme.md)** — options, privacy, the deep link
 behind it, and troubleshooting.
@@ -17,7 +17,6 @@ two has to be the copy that gets updated, and it is the one in the package.
 Jotaid.popclipext/       the extension itself
 ├── Config.yaml          name, options, the action
 ├── clip.zsh             builds a jotaid:// link and opens it
-├── sticky.zsh           invokes the shared encoder for Sticky Jot
 ├── jotaid.svg           monochrome bar icon
 ├── readme.md            shown on the directory page
 └── demo.mp4             looping demo on the directory page
